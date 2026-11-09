@@ -18,6 +18,10 @@ builtins=$(find "$PREFIX/lib/clang" -name libclang_rt.builtins-aarch64-android.a
 export RUSTFLAGS="-C link-arg=$builtins"
 export CARGO_BUILD_JOBS=2
 cd "$HOME/v8-diagnostic"
+cargo fetch
+python3 /workspace/termux/patch-deno-core.py
 cargo build --release
 printf '\n=== V8 standalone under gdb ===\n'
 gdb -q -batch -ex 'set disable-randomization off' -ex run -ex 'thread apply all bt' --args target/release/obscura-v8-diagnostic
+printf '\n=== Empty deno_core snapshot under gdb ===\n'
+gdb -q -batch -ex 'set disable-randomization off' -ex run -ex 'thread apply all bt' --args target/release/snapshot

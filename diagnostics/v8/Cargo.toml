@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 v8 = { version = "=150.4.0", features = ["simdutf"] }
+deno_core = "=0.412.0"
