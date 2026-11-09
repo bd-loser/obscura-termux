@@ -25,3 +25,7 @@ printf '\n=== V8 standalone under gdb ===\n'
 gdb -q -batch -ex 'set disable-randomization off' -ex run -ex 'thread apply all bt' --args target/release/obscura-v8-diagnostic
 printf '\n=== Empty deno_core snapshot under gdb ===\n'
 gdb -q -batch -ex 'set disable-randomization off' -ex run -ex 'thread apply all bt' --args target/release/snapshot
+printf '\n=== Snapshot with incremental marking disabled ===\n'
+gdb -q -batch -ex 'set disable-randomization off' -ex run -ex 'thread apply all bt' --args target/release/snapshot --no-incremental-marking
+printf '\n=== Direct V8 snapshot ===\n'
+gdb -q -batch -ex 'set disable-randomization off' -ex run -ex 'thread apply all bt' --args target/release/raw_snapshot
