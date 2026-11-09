@@ -15,6 +15,12 @@ printf '%s  %s\n' 0e2d1d8c4101cc6ff7242dd7252835e63884d2bba7e9c8c6463443ee6625fe
 printf '%s  %s\n' 7727826ae479bdb645e807239fb12d1f8e2e23de7a6cf16f5ee592690d1d8506 "$v8_dir/$binding" | sha256sum -c -
 export RUSTY_V8_ARCHIVE="$v8_dir/$archive"
 export RUSTY_V8_SRC_BINDING_PATH="$v8_dir/$binding"
+# V8 needs Android compiler-rt's instruction-cache flush routine. Apply the
+# link argument to host build scripts as well as the final binaries: the
+# snapshot generator links V8 while building natively in Termux.
+builtins=$(find "${PREFIX:?Termux PREFIX is required}/lib/clang" -name libclang_rt.builtins-aarch64-android.a -type f | sort -V | tail -n 1)
+[ -n "$builtins" ] || { echo 'Android clang compiler-rt builtins archive not found' >&2; exit 1; }
+export RUSTFLAGS="${RUSTFLAGS:-} -C link-arg=$builtins"
 export CARGO_INCREMENTAL=0
 export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-2}"
 # Fetch the exact locked upstream dependencies, then apply the Android errno fix.
