@@ -27,7 +27,25 @@ Obscura Termux runs natively against Android's **Bionic** C library. The release
 
 ## Install
 
-In Termux, run:
+If you already use our OpenCode / Camoufox APT repository:
+
+```sh
+pkg update
+pkg install obscura
+```
+
+For a fresh setup:
+
+```sh
+pkg install curl
+curl -fsSL https://raw.githubusercontent.com/bd-loser/opencode-bionic/main/repo-setup.sh | TERMUX_PACKAGE=obscura bash
+```
+
+The shared signed repository provides OpenCode, Camoufox and Obscura. All three OpenCode channels include the same Obscura package. Update with `pkg upgrade obscura` and remove with `pkg uninstall obscura`. The APT package wraps the verified release binaries; it does not rebuild V8.
+
+### Manual archive installation
+
+The original release archive remains available:
 
 ```sh
 pkg install curl tar coreutils
@@ -43,7 +61,7 @@ sha256sum -c SHA256SUMS && \
 
 The archive contains both `obscura` and `obscura-worker`. The worker is needed for parallel scraping. The version output includes the upstream source commit (`8534b40`); upstream's workspace version is `0.1.0`.
 
-To remove the installed binaries later:
+For manual archive installations only, remove the installed binaries with:
 
 ```sh
 rm "$PREFIX/bin/obscura" "$PREFIX/bin/obscura-worker"
