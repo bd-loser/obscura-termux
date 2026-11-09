@@ -1,0 +1,30 @@
+name: Experimental Termux build
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out pinned upstream source
+        uses: actions/checkout@v4
+        with:
+          repository: h4ckf0r0day/obscura
+          ref: 8534b401898ed17b62f69bdc3d5eb186bffb0d60
+          path: upstream
+      - name: Build and smoke test in Termux
+        run: |
+          mkdir -p "$RUNNER_TEMP/obscura-out"
+          chmod 777 "$RUNNER_TEMP/obscura-out"
+          docker run --rm -v "$GITHUB_WORKSPACE:/workspace:ro" -v "$RUNNER_TEMP/obscura-out:/out" termux/termux-docker:aarch64 bash /workspace/termux/ci-container.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: obscura-termux-aarch64-experimental
+          path: ${{ runner.temp }}/obscura-out/*.tar.gz
+          if-no-files-found: error
