@@ -1,9 +1,6 @@
 name: Experimental Termux build
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-  pull_request:
 permissions:
   contents: read
 jobs:
