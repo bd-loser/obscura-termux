@@ -11,7 +11,13 @@ if len(paths) != 1:
     raise SystemExit(f'Expected one deno_core 0.412.0 registry source, found {paths}')
 dest = root / 'termux-vendor' / 'deno_core'
 if dest.exists():
-    raise SystemExit(f'{dest} already exists; use a clean upstream checkout')
+    marker = dest / 'uv_compat' / 'tty.rs'
+    manifest = root / 'Cargo.toml'
+    if (marker.exists() and 'unsafe { libc::__errno() }' in marker.read_text()
+            and 'deno_core = { path = "termux-vendor/deno_core" }' in manifest.read_text()):
+        print('Android deno_core patch already applied')
+        raise SystemExit(0)
+    raise SystemExit(f'{dest} exists but is not the expected patch; use a clean checkout')
 shutil.copytree(paths[0], dest)
 source = dest / 'uv_compat' / 'tty.rs'
 text = source.read_text()
