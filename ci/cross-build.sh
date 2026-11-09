@@ -7,7 +7,7 @@ kit="$GITHUB_WORKSPACE"
 cd "$kit/upstream"
 [ "$(git rev-parse HEAD)" = 8534b401898ed17b62f69bdc3d5eb186bffb0d60 ] || { echo 'Unexpected upstream revision' >&2; exit 1; }
 ndk="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64"
-cc="$ndk/bin/aarch64-linux-android24-clang"
+cc="$ndk/bin/aarch64-linux-android28-clang"
 [ -x "$cc" ] || { echo 'NDK cross compiler missing' >&2; exit 1; }
 mkdir -p "$RUNNER_TEMP/v8-mirror/v150.4.0"
 mirror="$RUNNER_TEMP/v8-mirror/v150.4.0"
