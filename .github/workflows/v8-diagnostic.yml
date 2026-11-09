@@ -10,4 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run isolated V8 probe under debugger
-        run: docker run --rm --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -v "$GITHUB_WORKSPACE:/workspace:ro" termux/termux-docker:aarch64 bash /workspace/diagnostics/run-v8.sh
+        run: |
+          mkdir -p "$RUNNER_TEMP/diag-out"
+          chmod 777 "$RUNNER_TEMP/diag-out"
+          docker run --rm --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -v "$GITHUB_WORKSPACE:/workspace:ro" -v "$RUNNER_TEMP/diag-out:/out" termux/termux-docker:aarch64 bash /workspace/diagnostics/run-v8.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v8-android-diagnostics
+          path: ${{ runner.temp }}/diag-out/*.tar.gz
+          if-no-files-found: error

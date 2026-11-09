@@ -21,6 +21,7 @@ cd "$HOME/v8-diagnostic"
 cargo fetch
 python3 /workspace/termux/patch-deno-core.py
 cargo build --release
+tar -czf /out/v8-diagnostics.tar.gz -C target/release obscura-v8-diagnostic snapshot raw_snapshot
 printf '\n=== V8 standalone under gdb ===\n'
 gdb -q -batch -ex 'set disable-randomization off' -ex run -ex 'thread apply all bt' --args target/release/obscura-v8-diagnostic
 printf '\n=== Empty deno_core snapshot under gdb ===\n'
