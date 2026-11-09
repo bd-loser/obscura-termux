@@ -17,4 +17,9 @@ export RUSTY_V8_ARCHIVE="$v8_dir/$archive"
 export RUSTY_V8_SRC_BINDING_PATH="$v8_dir/$binding"
 export CARGO_INCREMENTAL=0
 export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-2}"
+# Fetch the exact locked upstream dependencies, then apply the Android errno fix.
+cargo fetch --locked
+python3 termux/patch-deno-core.py
+# The local patch changes the lockfile source for this crate; resolve offline.
+cargo metadata --offline --format-version 1 >/dev/null
 cargo build --locked --release -p obscura-cli --bins --features render
