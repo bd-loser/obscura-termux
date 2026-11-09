@@ -1,0 +1,13 @@
+name: Diagnose Android V8
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run isolated V8 probe under debugger
+        run: docker run --rm --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -v "$GITHUB_WORKSPACE:/workspace:ro" termux/termux-docker:aarch64 bash /workspace/diagnostics/run-v8.sh
