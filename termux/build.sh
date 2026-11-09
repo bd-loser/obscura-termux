@@ -20,7 +20,9 @@ export RUSTY_V8_SRC_BINDING_PATH="$v8_dir/$binding"
 # snapshot generator links V8 while building natively in Termux.
 builtins=$(find "${PREFIX:?Termux PREFIX is required}/lib/clang" -name libclang_rt.builtins-aarch64-android.a -type f | sort -V | tail -n 1)
 [ -n "$builtins" ] || { echo 'Android clang compiler-rt builtins archive not found' >&2; exit 1; }
-export RUSTFLAGS="${RUSTFLAGS:-} -C link-arg=$builtins"
+tls_object="$v8_dir/android-tls-align.o"
+clang -c termux/android-tls-align.S -o "$tls_object"
+export RUSTFLAGS="${RUSTFLAGS:-} -C link-arg=$tls_object -C link-arg=-Wl,-u,__obscura_android_tls_align -C link-arg=$builtins"
 export CARGO_INCREMENTAL=0
 export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-2}"
 # Fetch the exact locked upstream dependencies, then apply the Android errno fix.

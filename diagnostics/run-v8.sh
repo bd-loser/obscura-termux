@@ -15,7 +15,9 @@ printf '%s  %s\n' 7727826ae479bdb645e807239fb12d1f8e2e23de7a6cf16f5ee592690d1d85
 export RUSTY_V8_ARCHIVE="$PWD/$archive" RUSTY_V8_SRC_BINDING_PATH="$PWD/$binding"
 builtins=$(find "$PREFIX/lib/clang" -name libclang_rt.builtins-aarch64-android.a -type f | sort -V | tail -n 1)
 [ -n "$builtins" ]
-export RUSTFLAGS="-C link-arg=$builtins"
+tls_object="$HOME/v8-assets/android-tls-align.o"
+clang -c /workspace/termux/android-tls-align.S -o "$tls_object"
+export RUSTFLAGS="-C link-arg=$tls_object -C link-arg=-Wl,-u,__obscura_android_tls_align -C link-arg=$builtins"
 export CARGO_BUILD_JOBS=2
 cd "$HOME/v8-diagnostic"
 cargo fetch
